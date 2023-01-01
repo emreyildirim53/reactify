@@ -1,31 +1,28 @@
 const express = require("express");
-const router = express.Router();
-const mongoose = require("mongoose");
 const Emoji = require("../models/emoji");
+const mongoose = require("mongoose");
+const router = express.Router();
 
 // Emoji ekleme
 router.post("/", (req, res, next) => {
-  const emoji = new Emoji({
+  new Emoji({
     _id: new mongoose.Types.ObjectId(),
     code: req.body.code,
     isAnimated: req.body.isAnimated
-  });
-  console.log("hi")
-  emoji
-    .save()
-    .then(result => {
-      console.log(result);
-      res.status(201).json({
-        message: "Emoji eklendi",
-        eklenenEmoji: result
-      });
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({
-        error: err
-      });
+  })
+  .save()
+  .then(result => {
+    console.log(result);
+    res.status(201).json({
+      message: "Emoji eklendi", eklenenEmoji: result
     });
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({
+      error: err
+    });
+  });
 });
 
 // Tüm emoji'leri getir
@@ -51,13 +48,11 @@ router.get("/:emojiId", (req, res, next) => {
     .exec()
     .then(doc => {
       console.log("Veritabanından çekilen emoji: ", doc);
-      if (doc) {
-        res.status(200).json(doc);
-      } else {
-        res
-          .status(404)
-          .json({ message: "Belirtilen ID'ye sahip bir emoji bulunamadı" });
-      }
+      let docNotFound = { message: "Belirtilen ID'ye sahip bir emoji bulunamadı" };
+
+      doc ?
+        res.status(200).json(doc):
+        res.status(404).json(docNotFound);
     })
     .catch(err => {
       console.log(err);
@@ -91,9 +86,7 @@ router.delete("/:emojiId", (req, res, next) => {
   const id = req.params.emojiId;
   Emoji.remove({ _id: id })
     .exec()
-    .then(result => {
-      res.status(200).json(result);
-    })
+    .then(result => res.status(200).json(result))
     .catch(err => {
       console.log(err);
       res.status(500).json({

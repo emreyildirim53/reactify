@@ -1,17 +1,15 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
 
-// Token schema
-const TokenSchema = new Schema({
-  token: {
+const tokenSchema = new mongoose.Schema({
+  _id: mongoose.Schema.Types.ObjectId,
+  email: {
     type: String,
-    required: true,
-    unique: true
+    required: true
   },
-  requests: {
-    type: Number,
-    default: 0
+  password: {
+    type: String,
+    required: true
   }
 });
 
-module.exports = mongoose.model("Token", TokenSchema);
+module.exports = mongoose.model("Token", tokenSchema);
