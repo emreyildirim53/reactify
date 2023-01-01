@@ -67,33 +67,47 @@ router.post("/login", (req, res, next) => {
             token: token
           });
         }
-        res.status(401).json({
-          message: "Token hatalı"
-        });
+        res.status(401).json({ message: "Token hatalı" });
       });
     })
     .catch(err => {
       console.log(err);
-      res.status(500).json({
-        error: err
-      });
+      res.status(500).json({ error: err });
     });
+});
+
+router.get("/info", verifyToken, (req, res) => {
+  jwt.verify(req.token, process.env.JWT_KEY, (err, authData) => {
+    if (err) {
+      res.sendStatus(403);
+    } else {
+      res.json({
+        message: "Token doğrulandı.",
+        authData
+      });
+    }
+  });
 });
 
 router.delete("/:tokenId", (req, res, next) => {
   Token.remove({ _id: req.params.tokenId })
     .exec()
-    .then(result => {
-      res.status(200).json({
-        message: "Token silindi"
-      });
-    })
+    .then(() => { res.status(200).json({ message: "Token silindi" }) })
     .catch(err => {
       console.log(err);
-      res.status(500).json({
-        error: err
-      });
+      res.status(500).json({ error: err });
     });
 });
+
+function verifyToken(req, res, next) {
+  const bearerHeader = req.headers["authorization"];
+  if (typeof bearerHeader !== "undefined") {
+    const bearer = bearerHeader.split(" ");
+    req.token = bearer[1];
+    next();
+  } else {
+    res.sendStatus(403);
+  }
+}
 
 module.exports = router;
