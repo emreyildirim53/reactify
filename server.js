@@ -1,7 +1,7 @@
 require('dotenv').config();
+require("./mongo/connect");
 const express = require("express");
 const app = express();
-const db = require("./mongo/connect");
 
 app.use(express.json());
 
@@ -17,7 +17,6 @@ app.use(cors());
 app.get("/", (req, res) => {
   res.send("API çalışıyor...");
 });
-
 
 app.use("/v1/emoji", emojiRouter);
 app.use("/v1/token", tokenRouter);

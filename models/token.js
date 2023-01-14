@@ -9,6 +9,11 @@ const tokenSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
+  },
+  expires: {
+    type: Date,
+    required: true,
+    default: Date.now() + (60 * 60 * 1000) // expires in 1 hour
   }
 });
 
