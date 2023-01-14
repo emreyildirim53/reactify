@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\": \"test4@gmail.com\",\n    \"password\": \"123456\"\n}",
+					"raw": "{\n    \"email\": \"test6@gmail.com\",\n    \"password\": \"123456\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -57,7 +57,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\": \"test4@gmail.com\",\n    \"password\": \"123456\"\n}",
+					"raw": "{\n    \"email\": \"test6@gmail.com\",\n    \"password\": \"123456\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -81,10 +81,21 @@
 			"response": []
 		},
 		{
-			"name": "Delete Token",
+			"name": "Logout",
 			"request": {
 				"method": "DELETE",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "",
@@ -95,7 +106,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/v1/token/{tokenId}",
+					"raw": "http://localhost:3000/v1/token",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -103,15 +114,14 @@
 					"port": "3000",
 					"path": [
 						"v1",
-						"token",
-						"{tokenId}"
+						"token"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Get Token Info",
+			"name": "Info",
 			"request": {
 				"method": "GET",
 				"header": [
