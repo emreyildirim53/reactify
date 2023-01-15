@@ -7,6 +7,91 @@
 	},
 	"item": [
 		{
+			"name": "Client",
+			"item": [
+				{
+					"name": "Emoji",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "access-token",
+								"value": "{{access-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\": \"smile\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/v1/client/emoji/{{emojiId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"client",
+								"emoji",
+								"{{emojiId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Emoji",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "access-token",
+								"value": "{{access-token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/v1/client/emoji?id={{emojiId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"client",
+								"emoji"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{emojiId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Emoji ekleme",
 			"request": {
 				"method": "POST",
@@ -24,7 +109,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"code\": \"cry\",\n    \"isAnimated\": false\n}",
+					"raw": "{\n    \"code\": \"mad\",\n    \"isAnimated\": false\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -32,7 +117,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/v1/emoji",
+					"raw": "http://localhost:3000/v1/admin/emoji",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -40,6 +125,7 @@
 					"port": "3000",
 					"path": [
 						"v1",
+						"admin",
 						"emoji"
 					]
 				}
@@ -63,7 +149,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:3000/v1/emoji",
+					"raw": "http://localhost:3000/v1/admin/emoji",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -71,6 +157,7 @@
 					"port": "3000",
 					"path": [
 						"v1",
+						"admin",
 						"emoji"
 					]
 				}
