@@ -5,9 +5,12 @@ const app = express();
 
 app.use(express.json());
 
-const emojiRouter = require("./routes/emoji");
-const tokenRouter = require("./routes/token");
-const commentRouter = require("./routes/comment");
+const emojiRouter = require("./server/routes/emoji");
+const tokenRouter = require("./server/routes/auth");
+const commentRouter = require("./server/routes/comment");
+
+const emojiReactionRouter = require("./client/routes/emojiReaction");
+
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
@@ -18,9 +21,11 @@ app.get("/", (req, res) => {
   res.send("API çalışıyor...");
 });
 
-app.use("/v1/emoji", emojiRouter);
-app.use("/v1/token", tokenRouter);
-app.use("/v1/comment", commentRouter);
+app.use("/v1/admin/emoji", emojiRouter);
+app.use("/v1/admin/token", tokenRouter);
+app.use("/v1/admin/comment", commentRouter);
+
+app.use("/v1/client/emoji", emojiReactionRouter);
 
 const port = process.env.PORT || 3000;
 

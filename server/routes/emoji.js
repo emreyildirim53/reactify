@@ -3,7 +3,7 @@ const Emoji = require("../models/emoji");
 const mongoose = require("mongoose");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const verifyToken = require('../middlewares/verifyToken');
+const verifyToken = require('../../middlewares/verifyToken');
 
 router.post("/", verifyToken, (req, res, next) => {
   new Emoji({

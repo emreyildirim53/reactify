@@ -1,13 +1,14 @@
 const express = require("express");
-const Token = require("../models/token");
+const Auth = require("../models/auth");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-const verifyToken = require('../middlewares/verifyToken');
+const verifyToken = require('../../middlewares/verifyToken');
+
 
 router.post("/signup", (req, res, next) => {
-  Token.find({email: req.body.email})
+  Auth.find({email: req.body.email})
     .exec()
     .then(token => {
       if (token.length >= 1) {
@@ -17,14 +18,14 @@ router.post("/signup", (req, res, next) => {
 
         bcrypt.hash(userIdentifier, 10, (err, hash) => {
           if (err) return res.status(500).json({error: err});
-          else tokenSave(req, hash, res);
+          else authSave(req, hash, res);
         });
       }
     });
 });
 
 router.post("/login", (req, res, next) => {
-  Token.find({email: req.body.email})
+  Auth.find({email: req.body.email})
     .exec()
     .then(userToken => {
       console.log(userToken)
@@ -32,10 +33,10 @@ router.post("/login", (req, res, next) => {
 
       const userIdentifier = req.body.email + req.body.password;
       bcrypt.compare(userIdentifier, userToken[0].password, (err, result) => {
-        if (err) return res.status(401).json({message: "Token hatalı"});
+        if (err) return res.status(401).json({message: "Auth token hatalı"});
 
-        if (result) tokenUpdate(req, res, userToken);
-        else res.status(401).json({message: "Token hatalı"});
+        if (result) authUpdate(req, res, userToken);
+        else res.status(401).json({message: "Auth token hatalı"});
       });
     })
     .catch(err => {
@@ -44,12 +45,12 @@ router.post("/login", (req, res, next) => {
     });
 });
 
-router.delete("/", verifyToken, (req, res) => {
+router.delete("/logout", verifyToken, (req, res) => {
   jwt.verify(req.token, process.env.JWT_KEY, (err, authData) => {
     if (err)
       res.sendStatus(403);
     else {
-      Token.findOneAndUpdate({
+      Auth.findOneAndUpdate({
         email: authData.email,
         tokenId: authData.tokenId
       }, {$set: {expires: Date.now()}}, (err) => {
@@ -60,23 +61,33 @@ router.delete("/", verifyToken, (req, res) => {
   });
 });
 
-router.get("/info", verifyToken, (req, res) => {
-  jwt.verify(req.token, process.env.JWT_KEY, (err, authData) => {
-    if (err) res.sendStatus(403);
-    else res.json({message: "Token doğrulandı.", authData});
+router.delete("/all", (req, res, next) => {
+  Auth.deleteMany({}, (err) => {
+    if(err) {
+      res.status(500).json({error: err});
+    } else {
+      res.status(200).json({message: "All Auth records have been deleted."});
+    }
   });
 });
 
-function tokenSave(req, hash, res) {
-  new Token({
+router.get("/info", verifyToken, (req, res) => {
+  jwt.verify(req.token, process.env.JWT_KEY, (err, authData) => {
+    if (err) res.sendStatus(403);
+    else res.json({message: "Auth token doğrulandı.", authData});
+  });
+});
+
+function authSave(req, hash, res) {
+  new Auth({
     _id: new mongoose.Types.ObjectId(),
     email: req.body.email,
     password: hash,
     expires: Date.now() + 3600000
   })
     .save()
-    .then(result => {
-      res.status(201).json({message: "Token oluşturuldu."});
+    .then(() => {
+      res.status(201).json({message: "Auth token oluşturuldu."});
     })
     .catch(err => {
       console.log(err);
@@ -84,12 +95,12 @@ function tokenSave(req, hash, res) {
     });
 }
 
-function tokenUpdate(req, res, userToken) {
+function authUpdate(req, res, userToken) {
   const expires = Date.now() + 3600000;
-  Token.findOneAndUpdate({email: req.body.email}, {$set: {expires: expires}}, {new: true}, function (err) {
+  Auth.findOneAndUpdate({email: req.body.email}, {$set: {expires: expires}}, {new: true}, function (err) {
     if (err) {
-      console.log("Token güncellenirken hata oluştu!");
-      return res.status(500).json({error: "Token güncellenirken hata oluştu"});
+      console.log("Auth token güncellenirken hata oluştu!");
+      return res.status(500).json({error: "Auth token güncellenirken hata oluştu"});
     }
     const token = jwt.sign(
       {
@@ -101,7 +112,7 @@ function tokenUpdate(req, res, userToken) {
       {expiresIn: '1h'}
     );
     return res.status(200).json({
-      message: "Token doğrulandı",
+      message: "Auth token doğrulandı",
       token: token
     });
   });

@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const Token = require("../models/token");
+const Token = require("../server/models/auth");
 
 module.exports = function verifyToken(req, res, next) {
   const bearerHeader = req.headers["authorization"];
@@ -14,7 +14,7 @@ module.exports = function verifyToken(req, res, next) {
           if (err) res.status(500).json({error: "Token kontrol edilirken hata oluştu"});
           else if (!token) res.status(401).json({error: "Token geçersiz"});
           else if (token.expires < Date.now()) {
-            res.status(401).json({error: "Token expired"});
+            res.status(401).json({error: "Auth Token expired"});
           } else {
             req.authData = authData;
             next();
